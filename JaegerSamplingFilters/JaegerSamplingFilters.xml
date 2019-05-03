@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>JaegerSamplingFilters</name>
+    </assembly>
+    <members>
+        <member name="T:JaegerSamplingFilters.Filters.ISamplingFilter">
+            <summary>
+            A sampling filter can make a decision on weather to sample a span, based on the <see cref="T:Microsoft.AspNetCore.Http.HttpRequest"/>
+            currently being processed. Either use one of the pre-created ones, or design your own.
+            </summary>
+        </member>
+        <member name="P:JaegerSamplingFilters.Filters.ISamplingFilter.TargetSampler">
+            <summary>This is the sampler which will be used to process your span when the filter is matched.</summary>
+        </member>
+        <member name="M:JaegerSamplingFilters.Filters.ISamplingFilter.ShouldSample(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>Should the current supplied <see cref="T:Microsoft.AspNetCore.Http.HttpRequest"/> be sampled?</summary>
+            <param name="request">The current HTTP Request.</param>
+        </member>
+        <member name="T:JaegerSamplingFilters.Filters.RegexSamplingFilter">
+            <summary>A sampling filter which will match <see cref="P:Microsoft.AspNetCore.Http.HttpRequest.Path"/> against a supplied Regex.</summary>
+        </member>
+        <member name="M:JaegerSamplingFilters.Filters.RegexSamplingFilter.#ctor(System.String,Jaeger.Samplers.ISampler)">
+            <summary>A sampling filter which will match <see cref="P:Microsoft.AspNetCore.Http.HttpRequest.Path"/> against a supplied Regex.</summary>
+            <param name="regex">The regex to match <see cref="P:Microsoft.AspNetCore.Http.HttpRequest.Path"/> against.</param>
+            <param name="targetSampler">The sampler to pass matching spans to.</param>
+        </member>
+        <member name="M:JaegerSamplingFilters.Filters.RegexSamplingFilter.#ctor(System.String,System.Boolean)">
+            <summary>A sampling filter which will match <see cref="P:Microsoft.AspNetCore.Http.HttpRequest.Path"/> against a supplied Regex.</summary>
+            <param name="regex">The regex to match <see cref="P:Microsoft.AspNetCore.Http.HttpRequest.Path"/> against.</param>
+            <param name="sample">Should matched spans be sampled?</param>
+        </member>
+        <member name="P:JaegerSamplingFilters.Filters.RegexSamplingFilter.TargetSampler">
+            <summary>The sampler to pass matching spans to.</summary>
+        </member>
+        <member name="P:JaegerSamplingFilters.Filters.RegexSamplingFilter.Regex">
+            <summary>The regex to match <see cref="P:Microsoft.AspNetCore.Http.HttpRequest.Path"/> against.</summary>
+        </member>
+        <member name="M:JaegerSamplingFilters.Filters.RegexSamplingFilter.ShouldSample(Microsoft.AspNetCore.Http.HttpRequest)">
+            <summary>Should the current supplied <see cref="T:Microsoft.AspNetCore.Http.HttpRequest"/> be sampled?</summary>
+            <param name="request">The current HTTP Request.</param>
+        </member>
+        <member name="T:JaegerSamplingFilters.Samplers.RequestFilteringSampler">
+            <summary>Sampler able to make decisions about sampling a trace based on the HttpRequest it is running within.</summary>
+        </member>
+        <member name="P:JaegerSamplingFilters.Samplers.RequestFilteringSampler.SamplingFilters">
+            <summary>
+            A collection of sampling filters. These will be used to match requests. Order is important - the first filter which
+            matches a request will be activated and any following it be ignored.
+            </summary>
+        </member>
+        <member name="P:JaegerSamplingFilters.Samplers.RequestFilteringSampler.DefaultSampler">
+            <summary>The sampler to use when none of the items in <see name="SamplingFilters"/> matches.</summary>
+        </member>
+        <member name="P:JaegerSamplingFilters.Samplers.RequestFilteringSampler.HttpContextAccessor">
+            <summary>Gives access to the current <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>.</summary>
+        </member>
+        <member name="M:JaegerSamplingFilters.Samplers.RequestFilteringSampler.#ctor(System.Collections.Generic.IEnumerable{JaegerSamplingFilters.Filters.ISamplingFilter},Microsoft.AspNetCore.Http.IHttpContextAccessor)">
+            <summary>Sampler able to make decisions about sampling a trace based on the HttpRequest it is running within.</summary>
+            <param name="sampleFilters">
+            A collection of sampling filters. These will be used to match requests. Order is important - the first filter which
+            matches a request will be activated and any following it be ignored.
+            </param>
+            <param name="httpContextAccessor">Gives access to the current <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>.</param>
+        </member>
+        <member name="M:JaegerSamplingFilters.Samplers.RequestFilteringSampler.#ctor(System.Collections.Generic.List{JaegerSamplingFilters.Filters.ISamplingFilter},Jaeger.Samplers.ISampler,Microsoft.AspNetCore.Http.IHttpContextAccessor)">
+            <summary>Sampler able to make decisions about sampling a trace based on the HttpRequest it is running within.</summary>
+            <param name="sampleFilters">
+            A collection of sampling filters. These will be used to match requests. Order is important - the first filter which
+            matches a request will be activated and any following it be ignored.
+            </param>
+            <param name="defaultSampler">The sampler to use when none of the items in <paramref name="sampleFilters"/> matches.</param>
+            <param name="httpContextAccessor">Gives access to the current <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>.</param>
+        </member>
+        <member name="M:JaegerSamplingFilters.Samplers.RequestFilteringSampler.Update">
+            <summary>
+            Updates the <see cref="T:Jaeger.Samplers.GuaranteedThroughputSampler"/> for each operation.
+            </summary>
+            <returns><c>true</c>, if any samplers were updated.</returns>
+        </member>
+        <member name="M:JaegerSamplingFilters.Samplers.RequestFilteringSampler.Sample(System.String,Jaeger.TraceId)">
+            <summary>Makes a decision on tracing a span.</summary>
+            <param name="operation">The operation being executed. (This is not just the HTTP Method)</param>
+            <param name="id">The ID of the span.</param>
+        </member>
+        <member name="M:JaegerSamplingFilters.Samplers.RequestFilteringSampler.ToString">
+            <summary>Gets a string representation of the Sampler.</summary>
+        </member>
+        <member name="M:JaegerSamplingFilters.Samplers.RequestFilteringSampler.Close">
+            <summary>Closes the sampler, and any sub-samplers.</summary>
+        </member>
+        <member name="M:JaegerSamplingFilters.Samplers.RequestFilteringSampler.GetAtomicValues">
+            <summary>Gets the value of the sampler and all sub-samplers.</summary>
+        </member>
+    </members>
+</doc>
