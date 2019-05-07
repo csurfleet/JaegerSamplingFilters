@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace JaegerSamplingFilters.Samplers
 {
@@ -20,13 +18,13 @@ namespace JaegerSamplingFilters.Samplers
         /// A collection of sampling filters. These will be used to match requests. Order is important - the first filter which
         /// matches a request will be activated and any following it be ignored.
         /// </summary>
-        internal List<ISamplingFilter> SamplingFilters { get; }
+        public List<ISamplingFilter> SamplingFilters { get; }
 
         /// <summary>The sampler to use when none of the items in <see name="SamplingFilters"/> matches.</summary>
-        internal ISampler DefaultSampler { get; private set; }
+        public ISampler DefaultSampler { get; }
 
         /// <summary>Gives access to the current <see cref="HttpContext"/>.</summary>
-        internal IHttpContextAccessor HttpContextAccessor { get; }
+        public IHttpContextAccessor HttpContextAccessor { get; }
 
         /// <summary>Sampler able to make decisions about sampling a trace based on the HttpRequest it is running within.</summary>
         /// <param name="sampleFilters">
@@ -37,12 +35,10 @@ namespace JaegerSamplingFilters.Samplers
         public RequestFilteringSampler(IEnumerable<ISamplingFilter> sampleFilters,
             IHttpContextAccessor httpContextAccessor)
             : this(
-                sampleFilters.ToList(),
+                sampleFilters,
                 new ConstSampler(true),
                 httpContextAccessor)
-        {
-            Update();
-        }
+        {}
 
         /// <summary>Sampler able to make decisions about sampling a trace based on the HttpRequest it is running within.</summary>
         /// <param name="sampleFilters">
@@ -52,36 +48,13 @@ namespace JaegerSamplingFilters.Samplers
         /// <param name="defaultSampler">The sampler to use when none of the items in <paramref name="sampleFilters"/> matches.</param>
         /// <param name="httpContextAccessor">Gives access to the current <see cref="HttpContext"/>.</param>
         public RequestFilteringSampler(
-            List<ISamplingFilter> sampleFilters,
+            IEnumerable<ISamplingFilter> sampleFilters,
             ISampler defaultSampler,
             IHttpContextAccessor httpContextAccessor)
         {
-            SamplingFilters = sampleFilters;
+            SamplingFilters = sampleFilters?.ToList() ?? new List<ISamplingFilter>();
             DefaultSampler = defaultSampler ?? throw new ArgumentNullException(nameof(defaultSampler));
             HttpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
-        }
-
-        /// <summary>
-        /// Updates the <see cref="GuaranteedThroughputSampler"/> for each operation.
-        /// </summary>
-        /// <returns><c>true</c>, if any samplers were updated.</returns>
-        public bool Update()
-        {
-            lock (_lock)
-            {
-                var isUpdated = false;
-
-                var defaultSampler = new ConstSampler(true);
-
-                if (!defaultSampler.Equals(DefaultSampler))
-                {
-                    DefaultSampler.Close();
-                    DefaultSampler = defaultSampler;
-                    isUpdated = true;
-                }
-
-                return isUpdated;
-            }
         }
 
         /// <summary>Makes a decision on tracing a span.</summary>
@@ -93,8 +66,9 @@ namespace JaegerSamplingFilters.Samplers
             {
                 var context = HttpContextAccessor.HttpContext;
 
-                return SamplingFilters.Find(f => f.ShouldSample(context.Request))?.TargetSampler?.Sample(operation, id) ??
-                    DefaultSampler.Sample(operation, id);
+                return SamplingFilters.Find(f => f.ShouldSample(context.Request))
+                    ?.TargetSampler?.Sample(operation, id)
+                    ?? DefaultSampler.Sample(operation, id);
             }
         }
 
