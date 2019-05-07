@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <Version>0.1.0</Version>
+    <Authors>Chris Surfleet</Authors>
+    <Description>A collection of filters to customize your Jaeger tracing, and a framework to allow you to create your own.</Description>
+    <PackageProjectUrl>https://github.com/csurfleet/JaegerSamplingFilters</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/csurfleet/JaegerSamplingFilters</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <DocumentationFile>JaegerSamplingFilters.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Jaeger" Version="0.2.*" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="OpenTracing.Contrib.NetCore" Version="0.5.*" />
+  </ItemGroup>
+</Project>
