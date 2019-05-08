@@ -44,8 +44,9 @@ services.AddSingleton<ITracer>(sp => new Tracer.Builder(serviceName)
 ```
 
 OK cool! So if we take this apart a little, we have a RequestFilteringSampler with:
+- A collection of ISamplingFilters, these will be checked in turn for each incoming request;
 - A RegexSamplingFilter which will match incoming '/metrics' requests, and send them to a ConstSampler(false). I.E. it won't trace them;
-- A default sampler to use for everything not matched by the RegexSamplingFilter - in this case a ConstSampler(true);
+- A default sampler to use for everything not matched by the ISamplingFilters - in this case a ConstSampler(true);
 - A context accessor, so that we can inspect the incoming request.
 
 We can actually write this much more compactly using the defaults available:
@@ -60,3 +61,6 @@ services.AddSingleton<ITracer>(sp => new Tracer.Builder(serviceName)
 	sp.GetRequiredService<IHttpContextAccessor>()))
     .Build());
 ```
+
+This should be plenty to get you off the ground running. There will be further guides incoming on creating your own SamplingFilters
+and further filters themselves. Please create an issue for problems you find, or any filters you would like to see.
