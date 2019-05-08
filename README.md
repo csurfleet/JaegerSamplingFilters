@@ -22,7 +22,7 @@ Fine, so lets assume you have Jaeger setup to trace everything. Your setup in th
 ```c#
 services.AddSingleton<ITracer>(new Tracer.Builder(serviceName)
 	.WithReporter(myReporter)
-		.WithSampler(new ConstSampler(true))
+	  .WithSampler(new ConstSampler(true))
     .Build());
 ```
 
@@ -34,7 +34,7 @@ Lets filter out the metrics endpoint then:
 ```c#
 services.AddSingleton<ITracer>(sp => new Tracer.Builder(serviceName)
 	.WithReporter(myReporter)
-		.WithSampler(new RequestFilteringSampler(new ISamplingFilter[]
+	  .WithSampler(new RequestFilteringSampler(new ISamplingFilter[]
 	{
 		new RegexSamplingFilter("/metrics", new ConstSampler(false))
 	},
@@ -53,7 +53,7 @@ We can actually write this much more compactly using the defaults available:
 ```c#
 services.AddSingleton<ITracer>(sp => new Tracer.Builder(serviceName)
 	.WithReporter(myReporter)
-		.WithSampler(new RequestFilteringSampler(new ISamplingFilter[]
+	  .WithSampler(new RequestFilteringSampler(new ISamplingFilter[]
 	{
 		new RegexSamplingFilter("/metrics", false)
 	},
