@@ -63,7 +63,7 @@
             </param>
             <param name="httpContextAccessor">Gives access to the current <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>.</param>
         </member>
-        <member name="M:JaegerSamplingFilters.Samplers.RequestFilteringSampler.#ctor(System.Collections.Generic.List{JaegerSamplingFilters.Filters.ISamplingFilter},Jaeger.Samplers.ISampler,Microsoft.AspNetCore.Http.IHttpContextAccessor)">
+        <member name="M:JaegerSamplingFilters.Samplers.RequestFilteringSampler.#ctor(System.Collections.Generic.IEnumerable{JaegerSamplingFilters.Filters.ISamplingFilter},Jaeger.Samplers.ISampler,Microsoft.AspNetCore.Http.IHttpContextAccessor)">
             <summary>Sampler able to make decisions about sampling a trace based on the HttpRequest it is running within.</summary>
             <param name="sampleFilters">
             A collection of sampling filters. These will be used to match requests. Order is important - the first filter which
@@ -71,12 +71,6 @@
             </param>
             <param name="defaultSampler">The sampler to use when none of the items in <paramref name="sampleFilters"/> matches.</param>
             <param name="httpContextAccessor">Gives access to the current <see cref="T:Microsoft.AspNetCore.Http.HttpContext"/>.</param>
-        </member>
-        <member name="M:JaegerSamplingFilters.Samplers.RequestFilteringSampler.Update">
-            <summary>
-            Updates the <see cref="T:Jaeger.Samplers.GuaranteedThroughputSampler"/> for each operation.
-            </summary>
-            <returns><c>true</c>, if any samplers were updated.</returns>
         </member>
         <member name="M:JaegerSamplingFilters.Samplers.RequestFilteringSampler.Sample(System.String,Jaeger.TraceId)">
             <summary>Makes a decision on tracing a span.</summary>

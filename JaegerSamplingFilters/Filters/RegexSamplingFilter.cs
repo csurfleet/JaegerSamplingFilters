@@ -31,6 +31,9 @@ namespace JaegerSamplingFilters.Filters
 
         /// <summary>Should the current supplied <see cref="HttpRequest"/> be sampled?</summary>
         /// <param name="request">The current HTTP Request.</param>
-        public bool ShouldSample(HttpRequest request) => Regex.IsMatch(request.Path);
+        public bool ShouldSample(HttpRequest request)
+            => (request != default)
+                ? Regex.IsMatch(request.Path)
+                : throw new ArgumentNullException(nameof(request));
     }
 }

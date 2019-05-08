@@ -9,6 +9,7 @@
     <RepositoryUrl>https://github.com/csurfleet/JaegerSamplingFilters</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <DocumentationFile>JaegerSamplingFilters.xml</DocumentationFile>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
